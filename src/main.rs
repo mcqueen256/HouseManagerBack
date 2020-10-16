@@ -1,11 +1,8 @@
-struct User {
+// use actix_web::{middleware, web, App, HttpRequest, HttpServer};
 
-}
 
-struct House {
-    members: Vec<User>
-}
+
 
 fn main() {
-    println!("Hello, world!");
+
 }
