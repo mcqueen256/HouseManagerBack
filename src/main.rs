@@ -27,26 +27,24 @@ impl Database {
 #[derive(Debug, Serialize, Deserialize)]
 struct User {
     id: usize,
-    first_name: String,
-    last_name: String,
-    email: String,
-    password: String,
+    name: String,
     member_to: Vec<usize>, // Home.id
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 struct Home {
     id: usize,
+    name: String,
     owner_id: usize, // User.id
     members: Vec<usize>, // [User.id]
-    features: Vec<Feature>,
+    // features: Vec<Feature>,
+    // halue: i32,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 struct Feature {
 
 }
-
 
 use std::io::Write;
 async fn pop() -> HttpResponse {
@@ -70,7 +68,7 @@ async fn push(db: web::Json<Database>) -> HttpResponse {
         .write(true)
         .open(DATABASE)
         .expect("could not open file for writing");
-    let contents = serde_json::to_string(&db.0).expect("failed to convert recieved object to json str");
+    let contents = serde_json::to_string_pretty(&db.0).expect("failed to convert recieved object to json str");
     file.write_all(contents.as_bytes()).expect("could not write to file");
     HttpResponse::Ok().finish() // <- send response
 }
@@ -88,7 +86,7 @@ async fn main() -> std::io::Result<()> {
             .service(web::resource("/pop").route(web::post().to(pop)))
             .service(web::resource("/push").route(web::post().to(push)))
     })
-    .bind("127.0.0.1:8080")?
+    .bind("0.0.0.0:8080")?
     .run()
     .await
 }
